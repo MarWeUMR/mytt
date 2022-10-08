@@ -43,26 +43,23 @@ async fn main() {
 
     let rows = extract_rows_from_table(x);
 
-    let y = extract_column_data_from_row(rows[1]);
+    rows.into_iter().skip(1).for_each(|row| {
+        let y = extract_column_data_from_row(row);
+        println!("{:?}", y);
+    });
 
-    println!("{:?}", y);
-    // for element in cols {
-    //
-    //     let html = element.html();
-    //     let x = html.as_str();
-    //     println!("\n\n{:?}\n\n", x);
-    // }
 
-    // println!("{:?}", document);
 }
-
 
 #[derive(Debug)]
 struct Entry {
     uhrzeit: String,
     datum: String,
     halle: String,
-    liga: String
+    liga: String,
+    heim: String,
+    gast: String,
+    ergebnis: String,
 }
 
 fn extract_rows_from_table(table: ElementRef) -> Vec<ElementRef> {
@@ -76,10 +73,17 @@ fn extract_column_data_from_row(row: ElementRef) -> Entry {
     let selector = Selector::parse("td").unwrap();
     let cols = row.select(&selector);
     let x = cols.collect::<Vec<_>>();
+    println!("{:?}", x[0].html().as_str());
     let e = Entry {
+
+        // TODO: Backup needed here, if the cell is empty. 
         datum: x[0].text().into_iter().nth(1).unwrap().to_string(),
         uhrzeit: x[1].text().into_iter().nth(0).unwrap().to_string(),
         halle: x[2].text().into_iter().nth(1).unwrap().to_string(),
-        liga: x[3].text().into_iter().nth(0).unwrap().to_string()};
+        liga: x[3].text().into_iter().nth(0).unwrap().to_string(),
+        heim: x[4].text().into_iter().nth(1).unwrap().to_string(),
+        gast: x[5].text().into_iter().nth(1).unwrap().to_string(),
+        ergebnis: x[8].text().into_iter().nth(1).unwrap().to_string(),
+    };
     e
 }
