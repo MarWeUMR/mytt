@@ -1,0 +1,12 @@
+[package]
+name = "my_tt"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reqwest = { version = "0.11.12", features = ["json", "gzip"] } # reqwest with JSON parsing support
+futures = "0.3.24" # for our async / await blocks
+tokio = { version = "1.21.2", features = ["full"] } # for our async runtime
+scraper = "0.13.0"
