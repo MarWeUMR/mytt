@@ -43,12 +43,11 @@ async fn main() {
 
     let rows = extract_rows_from_table(x);
 
+    let mut backup_date = "";
     rows.into_iter().skip(1).for_each(|row| {
-        let y = extract_column_data_from_row(row);
+        let y = extract_column_data_from_row(row, backup_date);
         println!("{:?}", y);
     });
-
-
 }
 
 #[derive(Debug)]
@@ -69,21 +68,37 @@ fn extract_rows_from_table(table: ElementRef) -> Vec<ElementRef> {
     x
 }
 
-fn extract_column_data_from_row(row: ElementRef) -> Entry {
+fn extract_column_data_from_row(row: ElementRef, mut backup_date: &str) -> Entry {
     let selector = Selector::parse("td").unwrap();
     let cols = row.select(&selector);
     let x = cols.collect::<Vec<_>>();
     println!("{:?}", x[0].html().as_str());
-    let e = Entry {
 
-        // TODO: Backup needed here, if the cell is empty. 
-        datum: x[0].text().into_iter().nth(1).unwrap().to_string(),
+    let datum = match x[0].text().into_iter().nth(1) {
+        Some(s) => s,
+        // TODO: hier muss noch das backup datum rein
+        None => "b",
+    };
+
+    let ergebnis = match x[8].text().into_iter().nth(1) {
+        Some(s) => s,
+        None => "-",
+    };
+
+    let halle = match x[2].text().into_iter().nth(1) {
+        Some(s) => s,
+        None => "1?",
+    };
+
+    let e = Entry {
+        // TODO: Backup needed here, if the cell is empty.
+        datum: datum.to_string(),
         uhrzeit: x[1].text().into_iter().nth(0).unwrap().to_string(),
-        halle: x[2].text().into_iter().nth(1).unwrap().to_string(),
+        halle: halle.to_string(),
         liga: x[3].text().into_iter().nth(0).unwrap().to_string(),
         heim: x[4].text().into_iter().nth(1).unwrap().to_string(),
         gast: x[5].text().into_iter().nth(1).unwrap().to_string(),
-        ergebnis: x[8].text().into_iter().nth(1).unwrap().to_string(),
+        ergebnis: ergebnis.to_string(),
     };
     e
 }
