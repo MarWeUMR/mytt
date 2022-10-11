@@ -10,3 +10,4 @@ reqwest = { version = "0.11.12", features = ["json", "gzip"] } # reqwest with JS
 futures = "0.3.24" # for our async / await blocks
 tokio = { version = "1.21.2", features = ["full"] } # for our async runtime
 scraper = "0.13.0"
+surrealdb = "1.0.0-beta.8"
